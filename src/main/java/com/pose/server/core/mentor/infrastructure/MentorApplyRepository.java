@@ -7,9 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public class MentorApplyRepository extends JpaRepository<MentorApplyEntity, Long> {
-    Optional<MentorApplyEntity> findByMember(Member member);
-
-    boolean existsByMember(Member member);
-
+public interface MentorApplyRepository extends JpaRepository<MentorApplyEntity, Long> {
+    Optional<MentorApplyEntity> findByMember(MemberEntity member);
 }

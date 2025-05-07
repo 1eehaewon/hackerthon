@@ -21,13 +21,13 @@ public class MentorApplyEntity {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id", nullable = false, unique = true)
-    private Member member;
+    private MemberEntity member;
 
     @Column(name = "mentor_career", length = 250)
     private String mentorCareer;
 
-    @Column(name = "afflication", length = 20)
-    private String afflication;
+    @Column(name = "affiliation", length = 20)
+    private String affiliation;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
