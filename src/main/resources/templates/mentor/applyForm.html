@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>멘토 신청</title>
+</head>
+<body>
+<h1>멘토 신청</h1>
+
+<!-- 신청 성공 또는 실패 메시지 -->
+<div th:if="${message}" style="color:green;" th:text="${message}"></div>
+<div th:if="${error}" style="color:red;" th:text="${error}"></div>
+
+<form th:action="@{/mentor/apply}" method="post" th:object="${mentorApplyDto}">
+  <label>멘토 경력:</label>
+  <input type="text" th:field="*{mentorCareer}" placeholder="예: 백엔드 개발자 3년"/>
+  <br/><br/>
+
+  <label>소속:</label>
+  <input type="text" th:field="*{affiliation}" placeholder="예: 카카오"/>
+  <br/><br/>
+
+  <button type="submit">신청하기</button>
+</form>
+
+</body>
+</html>

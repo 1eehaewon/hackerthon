@@ -19,19 +19,38 @@
     <thead>
     <tr>
         <th>ID</th>
-        <th>신청자 ID</th>
-        <th>경력</th>
+        <th>성함</th>
         <th>소속</th>
-        <th>상세보기</th>
+        <th>경력</th>
+        <th>email</th>
+        <th>전화번호</th>
+        <th>상태</th>
+        <th>신청일자</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="apply : ${mentorList}">
-        <td th:text="${apply.id}">1</td>
-        <td th:text="${apply.member.userId}">user123</td>
-        <td th:text="${apply.mentorCareer}">3년</td>
-        <td th:text="${apply.affiliation}">카카오</td>
+        <td th:text="${apply.userId}"></td>
+        <td th:text="${apply.name}"></td>
+        <td th:text="${apply.affiliation}"></td>
+        <td th:text="${apply.mentorCareer}"></td>
+        <td th:text="${apply.email}"></td>
+        <td th:text="${apply.tel}"></td>
+        <td th:text="${apply.status}"></td>
+        <td th:text="${apply.createdAt}"></td>
         <td>
-            <a th:href="@{'/admin/mentor/' + ${apply.id}}">상세보기</a>
+            <form th:if="${apply.status == 'PENDING'}"
+                  th:action="@{|/admin/mentor/${apply.applyId}/approve|}" method="post">
+                <button type="submit">승인</button>
+            </form>
         </td>
+        <td>
+            <form th:if="${apply.status == 'PENDING'}"
+                  th:action="@{|/admin/mentor/${apply.applyId}/reject|}" method="post">
+                <button type="submit">거절</button>
+            </form>
+        </td>
+        <td th:if="${apply.status != 'PENDING'}" colspan="2">처리 완료</td>
     </tr>
+    </tbody>
+</table>
