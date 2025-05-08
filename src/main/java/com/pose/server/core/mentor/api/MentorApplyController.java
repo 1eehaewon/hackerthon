@@ -51,7 +51,7 @@ public class MentorApplyController {
         MemberEntity.Role role = (MemberEntity.Role) session.getAttribute("role");
 
         if (userId == null) {
-            redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
+            redirectAttributes.addFlashAttribute("alert", "로그인이 필요합니다.");
             return "redirect:/members/login";
         }
 
