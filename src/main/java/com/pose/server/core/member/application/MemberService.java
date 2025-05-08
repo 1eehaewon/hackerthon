@@ -43,16 +43,29 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public boolean login(LoginDTO loginDTO) {
-        // 사용자 정보 조회
+    public MemberEntity login(LoginDTO loginDTO) {
+        // userId를 기준으로 MemberEntity를 찾아옴
         MemberEntity member = memberRepository.findByUserId(loginDTO.getUserId())
                 .orElse(null);
 
         if (member == null) {
-            return false; // 유저가 없으면 로그인 실패
+            return null; // 유저가 없으면 로그인 실패
         }
 
         // 비밀번호 대조
-        return passwordEncoder.matches(loginDTO.getPw(), member.getPw());
+        if (passwordEncoder.matches(loginDTO.getPw(), member.getPw())) {
+            return member; // 로그인 성공 시 MemberEntity 객체 반환
+        } else {
+            return null; // 비밀번호 불일치 시 로그인 실패
+        }
+    }
+
+    public MemberEntity findByUserId(String userId) {
+        return memberRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+    }
+
+    public void update(MemberEntity member) {
+        memberRepository.save(member);
     }
 }

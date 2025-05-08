@@ -53,6 +53,6 @@ public class MemberEntity {
     private String tel;
 
     public enum Role {
-        MENTEE, MENTOR
+        MENTEE, MENTOR, ADMIN
     }
 }
