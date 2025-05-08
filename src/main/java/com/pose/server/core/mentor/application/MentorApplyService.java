@@ -1,5 +1,7 @@
 package com.pose.server.core.mentor.application;
 
+import com.pose.server.core.member.domain.MemberEntity;
+import com.pose.server.core.member.infrastructure.MemberRepository;
 import com.pose.server.core.mentor.domain.MentorApplyEntity;
 import com.pose.server.core.mentor.infrastructure.MentorApplyRepository;
 import com.pose.server.core.mentor.payload.MentorApplyDto;

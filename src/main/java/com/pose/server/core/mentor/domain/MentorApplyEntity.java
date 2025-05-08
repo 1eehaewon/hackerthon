@@ -1,5 +1,6 @@
 package com.pose.server.core.mentor.domain;
 
+import com.pose.server.core.member.domain.MemberEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
