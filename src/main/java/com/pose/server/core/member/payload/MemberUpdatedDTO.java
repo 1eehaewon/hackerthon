@@ -26,7 +26,4 @@ public class MemberUpdatedDTO {
 
     @NotBlank
     private String tel;
-
-    @Size(min = 8, max = 200)
-    private String pw;
 }

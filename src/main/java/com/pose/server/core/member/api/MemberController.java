@@ -4,6 +4,7 @@ import com.pose.server.core.member.application.MemberService;
 import com.pose.server.core.member.domain.MemberEntity;
 import com.pose.server.core.member.payload.LoginDTO;
 import com.pose.server.core.member.payload.MemberDTO;
+import com.pose.server.core.member.payload.PwChangeDTO;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -146,5 +147,47 @@ public class MemberController {
 
         model.addAttribute("message", "회원 정보가 성공적으로 수정되었습니다.");
         return "redirect:/members/loginhome";  // 또는 수정 완료 페이지로 이동
+    }
+
+    //패스워드 변경
+    @GetMapping("/pwc")
+    public String pwc(HttpSession session, Model model) {
+        String userId = (String) session.getAttribute("user");
+
+        if (userId == null) {
+            return "redirect:/members/login";  // 로그인 상태 확인
+        }
+        model.addAttribute("pwChangeDTO", new PwChangeDTO());
+        return "member/password-change";
+    }
+
+    @PostMapping("/pwc")
+    public String changePassword(@ModelAttribute PwChangeDTO pwChangeDTO, HttpSession session, Model model) {
+        String userId = (String) session.getAttribute("user");
+
+        if (userId == null) {
+            return "redirect:/members/login";  // 로그인 상태 확인
+        }
+
+        // 비밀번호 변경 요청 처리
+        MemberEntity member = memberService.findByUserId(userId);
+
+        // 현재 비밀번호가 맞는지 확인
+        if (!passwordEncoder.matches(pwChangeDTO.getCurrentPassword(), member.getPw())) {
+            model.addAttribute("error", "현재 비밀번호가 일치하지 않습니다.");
+            return "member/password-change";
+        }
+
+        // 새 비밀번호와 확인 비밀번호가 일치하는지 확인
+        if (!pwChangeDTO.getNewPassword().equals(pwChangeDTO.getConfirmPassword())) {
+            model.addAttribute("error", "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+            return "member/password-change";
+        }
+
+        // 새 비밀번호 암호화 후 저장
+        member.setPw(passwordEncoder.encode(pwChangeDTO.getNewPassword()));
+        memberService.update(member);
+
+        return "redirect:/members/logout";  // 비밀번호 변경 후 로그아웃
     }
 }
