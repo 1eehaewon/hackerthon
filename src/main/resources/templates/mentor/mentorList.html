@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>멘토 신청 목록</title>
+</head>
+<body>
+<h2>멘토 신청 목록</h2>
+
+<!-- 메시지 출력 -->
+<div th:if="${message}" style="color: green;">
+    <p th:text="${message}"></p>
+</div>
+<div th:if="${error}" style="color: red;">
+    <p th:text="${error}"></p>
+</div>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>신청자 ID</th>
+        <th>경력</th>
+        <th>소속</th>
+        <th>상세보기</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="apply : ${mentorList}">
+        <td th:text="${apply.id}">1</td>
+        <td th:text="${apply.member.userId}">user123</td>
+        <td th:text="${apply.mentorCareer}">3년</td>
+        <td th:text="${apply.affiliation}">카카오</td>
+        <td>
+            <a th:href="@{'/admin/mentor/' + ${apply.id}}">상세보기</a>
+        </td>
+    </tr>
