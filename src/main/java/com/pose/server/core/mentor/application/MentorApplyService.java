@@ -7,11 +7,13 @@ import com.pose.server.core.mentor.infrastructure.MentorApplyRepository;
 import com.pose.server.core.mentor.payload.MentorApplyDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MentorApplyService {
@@ -59,15 +61,17 @@ public class MentorApplyService {
 
     // 관리자 승인 / 거절
     // 두개의 엔티티를 다 바꿔서 dirty checking -> 추후 수정
+    @Transactional
     public void approveApplication(Long applyId) {
         MentorApplyEntity apply = mentorApplyRepository.findById(applyId)
                 .orElseThrow(() -> new IllegalArgumentException("신청 내역이 없습니다."));
         apply.setStatus(MentorApplyEntity.Status.APPROVED);
         // 멘토 권한 부여
         MemberEntity member = apply.getMember();
-        member.promoteToMentor(); // role = MENTOR
+        member.setRole(MemberEntity.Role.MENTOR); // role = MENTOR
     }
 
+    @Transactional
     public void rejectApplication(Long applyId) {
         MentorApplyEntity apply = mentorApplyRepository.findById(applyId)
                 .orElseThrow(() -> new IllegalArgumentException("신청 내역이 없습니다."));
@@ -75,7 +79,25 @@ public class MentorApplyService {
     }
 
     // 멘토 신청 목록
-    public List<MentorApplyEntity> getAllApplications() {
-        return mentorApplyRepository.findAll();
+    public List<MentorApplyDto> getAllApplications() {
+
+        var list = mentorApplyRepository.findAllWithMember().stream()
+                .map(entity -> {
+                    MemberEntity member = entity.getMember();
+                    return MentorApplyDto.builder()
+                            .applyId(entity.getApplyId())
+                            .userId(member.getUserId())
+                            .name(member.getName())
+                            .email(member.getEmail())
+                            .tel(member.getTel())
+                            .affiliation(entity.getAffiliation())
+                            .mentorCareer(entity.getMentorCareer())
+                            .status(entity.getStatus().name())
+                            .createdAt(entity.getCreatedAt())
+                            .build();
+                })
+                .toList();
+        log.info(list.toString());
+        return list;
     }
 }
