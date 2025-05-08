@@ -1,6 +1,7 @@
 package com.pose.server.core.mentor.payload;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +23,9 @@ public class MentorApplyDto {
     private String email;
     private String tel;
     private String status;
-
     private LocalDateTime createdAt;
+
+    // 이력서 파일 데이터와 파일명 추가
+    private MultipartFile resumeFile;  // 이력서 파일
+    private String resumeFilename;  // 파일명
 }

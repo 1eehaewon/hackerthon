@@ -6,6 +6,9 @@ import com.pose.server.core.mentor.domain.MentorApplyEntity;
 import com.pose.server.core.mentor.payload.MentorApplyDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -66,5 +69,21 @@ public class MentorAdminController {
         redirectAttributes.addFlashAttribute("message", "거절되었습니다.");
         return "redirect:/admin/mentor";
     }
-    
+
+    /**
+     * 관리자 전용 멘토 신청 이력서 다운로드
+     */
+    @GetMapping("/{id}/download")
+    public ResponseEntity<byte[]> downloadResume(@PathVariable Long id, HttpSession session) {
+        if (!isAdmin(session)) {
+            return ResponseEntity.status(403).build(); // 관리자가 아니면 403 Forbidden 반환
+        }
+
+        byte[] resumeFile = mentorApplyService.downloadResume(id);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"resume.pdf\"") // 파일명 변경 가능
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resumeFile);
+    }
 }

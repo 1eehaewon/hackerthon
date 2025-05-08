@@ -50,6 +50,7 @@
                 <th>전화번호</th>
                 <th>상태</th>
                 <th>신청일자</th>
+                <th>이력서</th>
                 <th colspan="2">처리</th>
             </tr>
             </thead>
@@ -63,6 +64,10 @@
                 <td th:text="${apply.tel}"></td>
                 <td th:text="${apply.status}"></td>
                 <td th:text="${#temporals.format(apply.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td>
+                    <!-- 이력서 다운로드 링크 -->
+                    <a th:href="@{${apply.resumeDownloadUrl}}" th:text="${apply.resumeFilename}">다운로드</a>
+                </td>
                 <td th:if="${apply.status == 'PENDING'}">
                     <form th:action="@{|/admin/mentor/${apply.applyId}/approve|}" method="post">
                         <button type="submit" class="btn btn-success btn-sm">승인</button>
