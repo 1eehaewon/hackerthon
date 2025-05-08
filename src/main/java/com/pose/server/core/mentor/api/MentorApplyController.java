@@ -22,9 +22,17 @@ public class MentorApplyController {
      * 로그인한 사용자가 폼에 접근할 수 있도록 MentorApplyDto 빈 객체를 모델에 담아 전달
      */
     @GetMapping
-    public String applyForm(Model model) {
+    public String applyForm(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+        String userId = (String) session.getAttribute("user");
+
+        if (userId == null) {
+            // FlashAttribute에 메시지 저장 → 로그인 페이지에서 alert로 처리
+            redirectAttributes.addFlashAttribute("alert", "로그인이 필요합니다.");
+            return "redirect:/members/login";
+        }
+
         model.addAttribute("mentorApplyDto", new MentorApplyDto());
-        return "mentor/applyForm"; // thymeleaf 템플릿 위치
+        return "mentor/applyForm";
     }
 
     /**
