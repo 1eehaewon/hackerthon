@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -26,8 +27,10 @@
         <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto my-2 my-lg-0">
-                <li class="nav-item"><a class="nav-link" href="/members/login">로그인</a></li>
-                <li class="nav-item"><a class="nav-link" href="/members/join">회원가입</a></li>
+                <li class="nav-item"><a class="nav-link" href="/members/login">마이페이지</a></li>
+                <li class="nav-item"><span class="nav-link" th:text="${role}"></span></li>
+                <li class="nav-item"><span class="nav-link" th:text="${user}"></span></li>
+                <li class="nav-item"><a class="nav-link" href="/members/logout">로그아웃</a></li>
             </ul>
         </div>
     </div>
@@ -41,7 +44,6 @@
                 <hr class="divider" />
             </div>
             <div class="col-lg-8 align-self-baseline">
-                <p class="text-white-75 mb-5">로그인 후 누구나<br /> 개발에 관련된 지식을 공유할 수 있습니다.</p>
                 <a class="btn btn-primary btn-xl" href="/register">자유게시판</a>
             </div>
         </div>
