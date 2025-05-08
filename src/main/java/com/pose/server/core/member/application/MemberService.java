@@ -31,7 +31,6 @@ public class MemberService {
         member.setUserId(memberDTO.getUserId());
         member.setPw(encodedPassword); // 실제 서비스에서는 반드시 암호화 필요
         member.setName(memberDTO.getName());
-        member.setRole(MemberEntity.Role.valueOf(memberDTO.getRole())); // 문자열 -> Enum 변환
         member.setEmail(memberDTO.getEmail());
         member.setAddr(memberDTO.getAddr());
         member.setTel(memberDTO.getTel());
