@@ -34,9 +34,15 @@ public class MentorApplyService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         // 2. 기존에 신청한 이력이 있는지 확인
-        if (mentorApplyRepository.findByMember(member).isPresent()) {
-            throw new IllegalStateException("이미 멘토 신청을 하셨습니다.");
-        }
+        mentorApplyRepository.findByMember(member).ifPresent(apply -> {
+            if (apply.getStatus() == MentorApplyEntity.Status.PENDING) {
+                throw new IllegalStateException("이미 멘토 신청을 하셨습니다. 현재 대기 중 입니다.");
+            }
+            if (apply.getStatus() == MentorApplyEntity.Status.APPROVED) {
+                throw new IllegalStateException("이미 멘토로 승인되었습니다.");
+            }
+        });
+
 
         // 3. 이력서 파일을 byte[]로 변환
         byte[] resumeBytes = null;
@@ -109,6 +115,15 @@ public class MentorApplyService {
         var list = mentorApplyRepository.findAllWithMember().stream()
                 .map(entity -> {
                     MemberEntity member = entity.getMember();
+                    String resumeFilename = entity.getResumeFilename(); // 이력서 파일명
+                    // 파일 다운로드 URL 생성 (컨트롤러에서 다운로드 URL을 처리하도록 설정)
+                    String resumeDownloadUrl = "/admin/mentor/" + entity.getApplyId() + "/download";
+                    String statusText = switch (entity.getStatus()) {
+                        case PENDING -> "대기중";
+                        case APPROVED -> "승인";
+                        case REJECTED -> "거절";
+                    };
+
                     return MentorApplyDto.builder()
                             .applyId(entity.getApplyId())
                             .userId(member.getUserId())
@@ -118,7 +133,10 @@ public class MentorApplyService {
                             .affiliation(entity.getAffiliation())
                             .mentorCareer(entity.getMentorCareer())
                             .status(entity.getStatus().name())
+                            .statusText(statusText)
                             .createdAt(entity.getCreatedAt())
+                            .resumeFilename(resumeFilename) // 파일명 추가
+                            .resumeDownloadUrl(resumeDownloadUrl) // 다운로드 URL 추가
                             .build();
                 })
                 .toList();

@@ -23,9 +23,11 @@ public class MentorApplyDto {
     private String email;
     private String tel;
     private String status;
+    private String statusText; // 뷰에 보여줄 한글 상태
     private LocalDateTime createdAt;
 
     // 이력서 파일 데이터와 파일명 추가
     private MultipartFile resumeFile;  // 이력서 파일
     private String resumeFilename;  // 파일명
+    private String resumeDownloadUrl; // 다운로드 URL (클릭 시 다운로드)
 }
