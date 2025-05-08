@@ -42,6 +42,10 @@ public class MemberController {
             model.addAttribute("role", role);
         }
 
+        if (role == "ADMIN") {
+            return "admin/mentor";
+        }
+
         return "member/home"; // home.html
     }
 
