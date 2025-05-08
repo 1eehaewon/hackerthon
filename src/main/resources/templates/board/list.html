@@ -42,30 +42,53 @@
             <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
                 <div class="card border-0 shadow rounded-3 my-5">
                     <div class="card-body p-4 p-sm-5">
-                        <h5 class="card-title text-center mb-5 fw-light fs-5">비밀번호 변경</h5>
-
-                        <form th:action="@{/members/pwc}" method="post" th:object="${pwChangeDTO}">
-                            <div>
-                                <label for="currentPassword">현재 비밀번호</label>
-                                <input type="password" th:field="*{currentPassword}" id="currentPassword" required />
-                            </div>
-
-                            <div>
-                                <label for="newPassword">새로운 비밀번호</label>
-                                <input type="password" th:field="*{newPassword}" id="newPassword" required />
-                            </div>
-
-                            <div>
-                                <label for="confirmPassword">새로운 비밀번호 확인</label>
-                                <input type="password" th:field="*{confirmPassword}" id="confirmPassword" required />
-                            </div>
-
-                            <div th:if="${error}">
-                                <span th:text="${error}"></span>
-                            </div>
-
-                            <button type="submit">비밀번호 변경</button>
+                        <h5 class="card-title text-center mb-5 fw-light fs-5">자유 게시판</h5>
+                        <form id="searchForm">
+                            <input type="text" name="keyword" id="keyword" placeholder="제목으로 검색" />
+                            <button type="submit">검색</button>
                         </form>
+                        <br>
+
+                        <a th:href="@{/board/create}">글쓰기</a>
+
+                        <div id="board-result" th:fragment="boardTable">
+                            <table border="1">
+                                <thead>
+                                <tr>
+                                    <th>번호</th>
+                                    <th>제목</th>
+                                    <th>작성일</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="board : ${boardPage.content}">
+                                    <td th:text="${board.boardId}"></td>
+                                    <td>
+                                        <a th:href="@{'/board/' + ${board.boardId}}" th:text="${board.title}"></a>
+                                    </td>
+                                    <td th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd')}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- 페이징 (검색 키워드 유지) -->
+                            <div>
+                            <span th:if="${boardPage.hasPrevious()}">
+                                <a href="#" th:onclick="'loadSearchPage(' + ${boardPage.number - 1} + ')'">이전</a>
+                            </span>
+
+                                <span th:if="${boardPage.totalPages > 0}"
+                                      th:each="i : ${#numbers.sequence(0, boardPage.totalPages - 1)}">
+                                    <a href="#" th:onclick="'loadSearchPage(' + ${i} + ')'"
+                                       th:text="${i + 1}"
+                                       th:classappend="${boardPage.number == i} ? 'active' : ''"></a>
+                                </span>
+
+                                <span th:if="${boardPage.hasNext()}">
+                                    <a href="#" th:onclick="'loadSearchPage(' + ${boardPage.number + 1} + ')'">다음</a>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -76,13 +99,21 @@
 <footer class="bg-light py-5">
     <div class="container px-4 px-lg-5"><div class="small text-center text-muted">Copyright &copy; 2025 - Kernel360 Team Pose</div></div>
 </footer>
-<script th:inline="javascript">
-    /<![CDATA[/
-    let loginAlert = [[${alert}]];
-    if (loginAlert) {
-        alert(loginAlert);
+<script>
+    document.getElementById('searchForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        loadSearchPage(0);
+    });
+
+    function loadSearchPage(page) {
+        const keyword = document.getElementById('keyword').value;
+
+        fetch(`/board/search?keyword=${encodeURIComponent(keyword)}&page=${page}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('board-result').innerHTML = html;
+            });
     }
-    /]]>/
 </script>
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -92,16 +123,3 @@
 <script src="/js/scripts.js"></script>
 </body>
 </html>
-
-
-<!--<!DOCTYPE html>-->
-<!--<html xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>비밀번호 변경</title>-->
-<!--</head>-->
-<!--<body>-->
-
-
-<!--</body>-->
-<!--</html>-->
