@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <meta name="description" content="" />
   <meta name="author" content="" />
-  <title>Creative - Start Bootstrap Theme</title>
+  <title>멘토,멘티 커뮤니티</title>
   <!-- Favicon-->
   <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
   <!-- Bootstrap Icons-->
@@ -41,7 +41,7 @@
         <div class="card border-0 shadow rounded-3 my-5">
           <div class="card-body p-4 p-sm-5">
             <h5 class="card-title text-center mb-5 fw-light fs-5">회원가입</h5>
-            <form action="/members/join" th:object="${member}" method="post">
+            <form th:action="@{/members/join}" th:object="${member}" method="post">
               <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="inputId" placeholder="이름" th:field="*{userId}">
                 <label for="inputId">아이디</label>
@@ -57,14 +57,6 @@
               <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="inputName" placeholder="이름" th:field="*{name}">
                 <label for="inputName">이름</label>
-              </div>
-
-              <div class="form-floating mb-3">
-                <!-- 사용자에게 보여줄 텍스트 (readonly) -->
-                <input type="text" class="form-control" id="inputRole" value="멘티" readonly>
-                <label for="inputRole">역할</label>
-                <!-- 실제로 서버에 전송될 값 -->
-                <input type="hidden" th:field="*{role}" value="MENTEE">
               </div>
 
               <div class="form-floating mb-3">
@@ -111,68 +103,3 @@
 <script src="/js/scripts.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-<!--<!DOCTYPE html>-->
-<!--<html xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-<!--  <meta charset="UTF-8">-->
-<!--  <title>회원가입</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<h1>회원가입</h1>-->
-
-<!--<form th:action="@{/members/join}" th:object="${member}" method="post">-->
-<!--  <div>-->
-<!--    <label for="userId">아이디</label>-->
-<!--    <input type="text" th:field="*{userId}" id="userId" />-->
-<!--    <div th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}">아이디 오류</div>-->
-<!--  </div>-->
-
-<!--  <div>-->
-<!--    <label for="pw">비밀번호</label>-->
-<!--    <input type="password" th:field="*{pw}" id="pw"/>-->
-<!--    <div th:if="${#fields.hasErrors('pw')}" th:errors="*{pw}">비밀번호 오류</div>-->
-<!--  </div>-->
-
-<!--  <div>-->
-<!--    <label for="name">이름</label>-->
-<!--    <input type="text" th:field="*{name}" id="name"/>-->
-<!--    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}">이름 오류</div>-->
-<!--  </div>-->
-
-<!--  <div>-->
-<!--    <label for="role">역할</label>-->
-<!--    <select th:field="*{role}" id="role">-->
-<!--      <option value="MENTEE">멘티</option>-->
-<!--    </select>-->
-<!--    <div th:if="${#fields.hasErrors('role')}" th:errors="*{role}">역할 오류</div>-->
-<!--  </div>-->
-
-<!--  <div>-->
-<!--    <label for="email">이메일</label>-->
-<!--    <input type="email" th:field="*{email}" id="email"/>-->
-<!--    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}">이메일 오류</div>-->
-<!--  </div>-->
-
-<!--  <div>-->
-<!--    <label for="addr">주소</label>-->
-<!--    <input type="text" th:field="*{addr}" id="addr"/>-->
-<!--    <div th:if="${#fields.hasErrors('addr')}" th:errors="*{addr}">주소 오류</div>-->
-<!--  </div>-->
-
-<!--  <div>-->
-<!--    <label for="tel">전화번호</label>-->
-<!--    <input type="text" th:field="*{tel}" id="tel"/>-->
-<!--    <div th:if="${#fields.hasErrors('tel')}" th:errors="*{tel}">전화번호 오류</div>-->
-<!--  </div>-->
-
-<!--  <button type="submit">가입하기</button>-->
-<!--</form>-->
-
-<!--</body>-->
-<!--</html>-->

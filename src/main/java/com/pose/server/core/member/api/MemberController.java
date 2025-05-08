@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/members")
@@ -24,30 +25,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
-
-
-    //메인페이지
-    @GetMapping("")
-    public String home() {
-        return "member/home"; // home.html
-    }
-
-    @GetMapping("/loginhome")
-    public String loginhome(HttpSession session, Model model) {
-        String userId = (String) session.getAttribute("user");
-        String role = session.getAttribute("role").toString();
-
-        if (userId != null) {
-            model.addAttribute("user", userId); // 세션에 있는 사용자 정보 전달
-            model.addAttribute("role", role);
-        }
-
-        if (role == "ADMIN") {
-            return "admin/mentor";
-        }
-
-        return "member/home"; // home.html
-    }
 
     //회원가입
     @GetMapping("/join")
@@ -63,14 +40,8 @@ public class MemberController {
         }
 
         memberService.join(memberDTO);
-        return "redirect:/members/join-success";
+        return "redirect:/";
     }
-
-    @GetMapping("/join-success")
-    public String joinSuccess() {
-        return "member/join-success"; // templates/member/join-success.html
-    }
-
 
     //로그인
     @GetMapping("/login")
@@ -87,7 +58,14 @@ public class MemberController {
             // 로그인 성공 시 세션에 사용자 정보 저장 (예: userId)
             session.setAttribute("user", memberEntity.getUserId());
             session.setAttribute("role", memberEntity.getRole());
-            return "redirect:/members/loginhome"; // 로그인 후 리다이렉트할 페이지
+
+            String role = session.getAttribute("role").toString();
+
+            if ("ADMIN".equals(role)) {
+                return "redirect:/admin/mentor";
+            }
+
+            return "redirect:/loginhome"; // 로그인 후 리다이렉트할 페이지
         } else {
             // 로그인 실패 시 오류 메시지 전달
             model.addAttribute("loginError", "아이디 또는 비밀번호가 일치하지 않습니다.");
@@ -104,10 +82,12 @@ public class MemberController {
 
     //회원정보 수정
     @GetMapping("/update")
-    public String showUpdateForm(HttpSession session, Model model) {
+    public String showUpdateForm(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         String loginId = (String) session.getAttribute("user");
 
         if (loginId == null) {
+            // FlashAttribute에 메시지 저장 → 로그인 페이지에서 alert로 처리
+            redirectAttributes.addFlashAttribute("alert", "로그인이 필요합니다.");
             return "redirect:/members/login";
         }
 
@@ -127,10 +107,12 @@ public class MemberController {
     }
 
     @PostMapping("/update")
-    public String updateMember(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
+    public String updateMember(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         String userId = (String) session.getAttribute("user");
 
         if (userId == null) {
+            // FlashAttribute에 메시지 저장 → 로그인 페이지에서 alert로 처리
+            redirectAttributes.addFlashAttribute("alert", "로그인이 필요합니다.");
             return "redirect:/members/login";
         }
 
@@ -150,27 +132,31 @@ public class MemberController {
         memberService.update(member);  // 저장 로직은 서비스에 위임
 
         model.addAttribute("message", "회원 정보가 성공적으로 수정되었습니다.");
-        return "redirect:/members/loginhome";  // 또는 수정 완료 페이지로 이동
+        return "redirect:/loginhome";  // 또는 수정 완료 페이지로 이동
     }
 
     //패스워드 변경
     @GetMapping("/pwc")
-    public String pwc(HttpSession session, Model model) {
+    public String pwc(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         String userId = (String) session.getAttribute("user");
 
         if (userId == null) {
-            return "redirect:/members/login";  // 로그인 상태 확인
+            // FlashAttribute에 메시지 저장 → 로그인 페이지에서 alert로 처리
+            redirectAttributes.addFlashAttribute("alert", "로그인이 필요합니다.");
+            return "redirect:/members/login";
         }
         model.addAttribute("pwChangeDTO", new PwChangeDTO());
         return "member/password-change";
     }
 
     @PostMapping("/pwc")
-    public String changePassword(@ModelAttribute PwChangeDTO pwChangeDTO, HttpSession session, Model model) {
+    public String changePassword(@ModelAttribute PwChangeDTO pwChangeDTO, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         String userId = (String) session.getAttribute("user");
 
         if (userId == null) {
-            return "redirect:/members/login";  // 로그인 상태 확인
+            // FlashAttribute에 메시지 저장 → 로그인 페이지에서 alert로 처리
+            redirectAttributes.addFlashAttribute("alert", "로그인이 필요합니다.");
+            return "redirect:/members/login";
         }
 
         // 비밀번호 변경 요청 처리
