@@ -32,9 +32,10 @@ public class MentorAdminController {
      * 관리자 전용 멘토 신청 목록
      */
     @GetMapping
-    public String viewMentorList(HttpSession session, Model model) {
+    public String viewMentorList(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
         if (!isAdmin(session)) {
+            redirectAttributes.addFlashAttribute("alert", "관리자만 접근 가능합니다."); // alert
             return "redirect:/members/login"; // 로그인되지 않았거나 관리자가 아니면 로그인 페이지로
         }
 
