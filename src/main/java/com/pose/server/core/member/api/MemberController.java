@@ -83,16 +83,22 @@ public class MemberController {
     //회원정보 수정
     @GetMapping("/update")
     public String showUpdateForm(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
-        String loginId = (String) session.getAttribute("user");
+        String userId = (String) session.getAttribute("user");
+        String role = session.getAttribute("role").toString();
 
-        if (loginId == null) {
+        if (userId != null) {
+            model.addAttribute("user", userId); // 세션에 있는 사용자 정보 전달
+            model.addAttribute("role", role);
+        }
+
+        if (userId == null) {
             // FlashAttribute에 메시지 저장 → 로그인 페이지에서 alert로 처리
             redirectAttributes.addFlashAttribute("alert", "로그인이 필요합니다.");
             return "redirect:/members/login";
         }
 
         // 서비스로부터 최신 MemberEntity 조회
-        MemberEntity member = memberService.findByUserId(loginId);
+        MemberEntity member = memberService.findByUserId(userId);
 
         MemberDTO memberDTO = MemberDTO.builder()
                 .userId(member.getUserId())
@@ -139,6 +145,12 @@ public class MemberController {
     @GetMapping("/pwc")
     public String pwc(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         String userId = (String) session.getAttribute("user");
+        String role = session.getAttribute("role").toString();
+
+        if (userId != null) {
+            model.addAttribute("user", userId); // 세션에 있는 사용자 정보 전달
+            model.addAttribute("role", role);
+        }
 
         if (userId == null) {
             // FlashAttribute에 메시지 저장 → 로그인 페이지에서 alert로 처리
@@ -179,5 +191,36 @@ public class MemberController {
         memberService.update(member);
 
         return "redirect:/members/logout";  // 비밀번호 변경 후 로그아웃
+    }
+
+    @GetMapping("/mypage")
+    public String myPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+        String userId = (String) session.getAttribute("user");
+        String role = session.getAttribute("role").toString();
+
+        if (userId != null) {
+            model.addAttribute("user", userId); // 세션에 있는 사용자 정보 전달
+            model.addAttribute("role", role);
+        }
+
+        if (userId == null) {
+            // FlashAttribute에 메시지 저장 → 로그인 페이지에서 alert로 처리
+            redirectAttributes.addFlashAttribute("alert", "로그인이 필요합니다.");
+            return "redirect:/members/login";
+        }
+
+        // 서비스로부터 최신 MemberEntity 조회
+        MemberEntity member = memberService.findByUserId(userId);
+
+        MemberDTO memberDTO = MemberDTO.builder()
+                .userId(member.getUserId())
+                .name(member.getName())
+                .email(member.getEmail())
+                .addr(member.getAddr())
+                .tel(member.getTel())
+                .build();
+
+        model.addAttribute("memberDTO", memberDTO);
+        return "member/mypage";
     }
 }
