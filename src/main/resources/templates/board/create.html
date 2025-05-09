@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 작성</title>
+</head>
+<body>
+<h1>게시글 작성</h1>
+
+<form th:action="@{/board/create}" method="post" enctype="multipart/form-data" th:object="${board}">
+    <input type="text" th:field="*{title}" placeholder="제목" required /> <br>
+    <textarea th:field="*{content}" placeholder="내용" required></textarea> <br>
+    <input type="file" name="imageFile"/> <br>
+    <!-- 게시판 유형 선택 -->
+    <label>게시판 유형:</label><br>
+    <input type="radio" th:field="*{boardStatus}" value="FREE" onchange="toggleMentorId()" /> 자유게시판
+    <input type="radio" th:field="*{boardStatus}" value="PERSONAL" onchange="toggleMentorId()" /> 1:1 게시판
+    <br><br>
+
+    <!-- mentorId 입력: PERSONAL 선택 시만 표시 -->
+    <div id="mentorIdGroup" style="display: none;">
+        <input type="text" th:field="*{mentorId}" placeholder="멘토 ID (선택)" />
+    </div>
+    <br><br>
+    <button type="submit">저장</button>
+</form>
+
+<a th:href="@{/board}">취소</a>
+
+<script>
+    function toggleMentorId() {
+        const selected = document.querySelector('input[name="boardStatus"]:checked');
+        const mentorDiv = document.getElementById('mentorIdGroup');
+        if (selected && selected.value === 'PERSONAL') {
+            mentorDiv.style.display = 'block';
+        } else {
+            mentorDiv.style.display = 'none';
+        }
+    }
+
+    // 페이지 로딩 시 현재 상태 반영
+    window.onload = toggleMentorId;
+</script>
+</body>
+</html>
