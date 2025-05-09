@@ -148,6 +148,9 @@ public class MentorApplyService {
     public void deleteApplication(Long id) {
         MentorApplyEntity entity = mentorApplyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멘토 신청입니다."));
+        if (entity.getStatus() == MentorApplyEntity.Status.APPROVED) {
+            throw new IllegalStateException("승인된 신청은 삭제할 수 없습니다.");
+        }
         mentorApplyRepository.delete(entity);
     }
 }
