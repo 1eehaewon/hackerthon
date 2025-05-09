@@ -33,7 +33,7 @@
             <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
             <!-- 신청 폼 -->
-            <form th:action="@{/mentor/apply}" method="post" th:object="${mentorApplyDto}">
+            <form th:action="@{/mentor/apply}" method="post" th:object="${mentorApplyDto}" enctype="multipart/form-data">
               <div class="form-floating mb-3">
                 <input type="text" th:field="*{mentorCareer}" class="form-control" id="careerInput"
                        placeholder="예: 백엔드 개발자 3년">
@@ -45,9 +45,17 @@
                        placeholder="예: 카카오">
                 <label for="affInput">소속</label>
               </div>
+              <!-- 이력서 파일 업로드 -->
+              <div class="mb-3">
+                <label for="resumeFile" class="form-label">이력서 업로드</label>
+                <input type="file" class="form-control" id="resumeFile" name="resumeFile" accept=".pdf,.doc,.docx,.txt,.rtf">
+              </div>
 
               <div class="d-grid">
                 <button class="btn btn-primary btn-block" type="submit">멘토 신청하기</button>
+              </div>
+              <div class="d-grid mt-2">
+                <button class="btn btn-secondary btn-block" type="button" onclick="history.back()">이전으로</button>
               </div>
             </form>
 

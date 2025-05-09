@@ -40,6 +40,15 @@ public class MentorApplyEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // 이력서 파일을 BLOB 형식으로 저장
+    @Lob
+    @Column(name = "resume_file", columnDefinition = "MEDIUMBLOB")
+    private byte[] resumeFile; // 파일
+
+    @Column(name = "resume_filename")
+    private String resumeFilename; // 파일명
+
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -44,12 +45,13 @@ public class MentorApplyController {
     @PostMapping
     public String apply(HttpSession session,
                         @ModelAttribute MentorApplyDto dto,
+                        @RequestParam("resumeFile") MultipartFile resumeFile,
                         RedirectAttributes redirectAttributes) {
         String userId = (String) session.getAttribute("user");
         MemberEntity.Role role = (MemberEntity.Role) session.getAttribute("role");
 
         if (userId == null) {
-            redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
+            redirectAttributes.addFlashAttribute("alert", "로그인이 필요합니다.");
             return "redirect:/members/login";
         }
 
@@ -60,6 +62,10 @@ public class MentorApplyController {
         }
 
         try {
+            // MentorApplyDto에 파일을 설정
+            dto.setResumeFile(resumeFile);  // MultipartFile로 받아서 DTO에 설정
+            dto.setResumeFilename(resumeFile.getOriginalFilename());
+
             mentorApplyService.applyForMentor(userId, dto);
             redirectAttributes.addFlashAttribute("message", "멘토 신청이 완료되었습니다.");
         } catch (Exception e) {
