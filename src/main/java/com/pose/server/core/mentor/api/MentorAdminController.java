@@ -47,6 +47,7 @@ public class MentorAdminController {
 
 
 
+    // 승인
     @PostMapping("/{id}/approve")
     public String approveMentor(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         if (!isAdmin(session)) {
@@ -59,6 +60,7 @@ public class MentorAdminController {
         return "redirect:/admin/mentor";
     }
 
+    // 거절
     @PostMapping("/{id}/reject")
     public String rejectMentor(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         if (!isAdmin(session)) {
@@ -87,4 +89,20 @@ public class MentorAdminController {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resumeFile);
     }
+
+    // 신청 삭제
+    @PostMapping("/{id}/delete")
+    public String deleteMentorApplication(@PathVariable Long id,
+                                          HttpSession session,
+                                          RedirectAttributes redirectAttributes) {
+        if (!isAdmin(session)) {
+            redirectAttributes.addFlashAttribute("error", "접근 권한이 없습니다.");
+            return "redirect:/members/login";
+        }
+
+        mentorApplyService.deleteApplication(id);
+        redirectAttributes.addFlashAttribute("alert", "삭제되었습니다.");
+        return "redirect:/admin/mentor";
+    }
+
 }

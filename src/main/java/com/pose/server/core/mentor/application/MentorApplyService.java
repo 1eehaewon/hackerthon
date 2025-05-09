@@ -143,4 +143,11 @@ public class MentorApplyService {
         log.info(list.toString());
         return list;
     }
+
+    // 신청 삭제
+    public void deleteApplication(Long id) {
+        MentorApplyEntity entity = mentorApplyRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멘토 신청입니다."));
+        mentorApplyRepository.delete(entity);
+    }
 }
