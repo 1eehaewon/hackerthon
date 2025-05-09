@@ -51,12 +51,12 @@ public class MentorAdminController {
     @PostMapping("/{id}/approve")
     public String approveMentor(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         if (!isAdmin(session)) {
-            redirectAttributes.addFlashAttribute("error", "접근 권한이 없습니다.");
+            redirectAttributes.addFlashAttribute("alert", "접근 권한이 없습니다.");
             return "redirect:/members/login";
         }
 
         mentorApplyService.approveApplication(id);
-        redirectAttributes.addFlashAttribute("message", "승인되었습니다.");
+        redirectAttributes.addFlashAttribute("alert", "승인되었습니다.");
         return "redirect:/admin/mentor";
     }
 
@@ -64,12 +64,12 @@ public class MentorAdminController {
     @PostMapping("/{id}/reject")
     public String rejectMentor(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         if (!isAdmin(session)) {
-            redirectAttributes.addFlashAttribute("error", "접근 권한이 없습니다.");
+            redirectAttributes.addFlashAttribute("alert", "접근 권한이 없습니다.");
             return "redirect:/members/login";
         }
 
         mentorApplyService.rejectApplication(id);
-        redirectAttributes.addFlashAttribute("message", "거절되었습니다.");
+        redirectAttributes.addFlashAttribute("alert", "거절되었습니다.");
         return "redirect:/admin/mentor";
     }
 
@@ -96,12 +96,16 @@ public class MentorAdminController {
                                           HttpSession session,
                                           RedirectAttributes redirectAttributes) {
         if (!isAdmin(session)) {
-            redirectAttributes.addFlashAttribute("error", "접근 권한이 없습니다.");
+            redirectAttributes.addFlashAttribute("alert", "접근 권한이 없습니다.");
             return "redirect:/members/login";
         }
 
-        mentorApplyService.deleteApplication(id);
-        redirectAttributes.addFlashAttribute("alert", "삭제되었습니다.");
+        try {
+            mentorApplyService.deleteApplication(id);
+            redirectAttributes.addFlashAttribute("alert", "삭제되었습니다.");
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("alert", e.getMessage());
+        }
         return "redirect:/admin/mentor";
     }
 

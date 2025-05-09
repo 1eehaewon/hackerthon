@@ -69,7 +69,7 @@ public class MentorApplyController {
             mentorApplyService.applyForMentor(userId, dto);
             redirectAttributes.addFlashAttribute("message", "멘토 신청이 완료되었습니다.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "예기치 않은 오류가 발생했습니다.");
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
 
         return "redirect:/mentor/apply";
