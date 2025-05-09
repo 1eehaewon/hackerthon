@@ -26,6 +26,11 @@ public class MentorApplyController {
     public String applyForm(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         String userId = (String) session.getAttribute("user");
 
+        if (userId != null) {
+            model.addAttribute("user", userId); // 세션에 있는 사용자 정보 전달
+        }
+
+
         if (userId == null) {
             // FlashAttribute에 메시지 저장 → 로그인 페이지에서 alert로 처리
             redirectAttributes.addFlashAttribute("alert", "로그인이 필요합니다.");
@@ -51,7 +56,7 @@ public class MentorApplyController {
         MemberEntity.Role role = (MemberEntity.Role) session.getAttribute("role");
 
         if (userId == null) {
-            redirectAttributes.addFlashAttribute("alert", "로그인이 필요합니다.");
+            redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/members/login";
         }
 
