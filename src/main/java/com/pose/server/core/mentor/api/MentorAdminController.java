@@ -32,9 +32,10 @@ public class MentorAdminController {
      * 관리자 전용 멘토 신청 목록
      */
     @GetMapping
-    public String viewMentorList(HttpSession session, Model model) {
+    public String viewMentorList(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
         if (!isAdmin(session)) {
+            redirectAttributes.addFlashAttribute("alert", "관리자만 접근 가능합니다."); // alert
             return "redirect:/members/login"; // 로그인되지 않았거나 관리자가 아니면 로그인 페이지로
         }
 
@@ -46,30 +47,35 @@ public class MentorAdminController {
 
 
 
+    // 승인
     @PostMapping("/{id}/approve")
     public String approveMentor(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         if (!isAdmin(session)) {
-            redirectAttributes.addFlashAttribute("error", "접근 권한이 없습니다.");
+            redirectAttributes.addFlashAttribute("alert", "접근 권한이 없습니다.");
             return "redirect:/members/login";
         }
 
         mentorApplyService.approveApplication(id);
-        redirectAttributes.addFlashAttribute("message", "승인되었습니다.");
+        redirectAttributes.addFlashAttribute("alert", "승인되었습니다.");
         return "redirect:/admin/mentor";
     }
 
+    // 거절
     @PostMapping("/{id}/reject")
     public String rejectMentor(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         if (!isAdmin(session)) {
-            redirectAttributes.addFlashAttribute("error", "접근 권한이 없습니다.");
+            redirectAttributes.addFlashAttribute("alert", "접근 권한이 없습니다.");
             return "redirect:/members/login";
         }
 
         mentorApplyService.rejectApplication(id);
-        redirectAttributes.addFlashAttribute("message", "거절되었습니다.");
+        redirectAttributes.addFlashAttribute("alert", "거절되었습니다.");
         return "redirect:/admin/mentor";
     }
 
+    /**
+     * 관리자 전용 멘토 신청 이력서 다운로드
+     */
     @GetMapping("/{id}/download")
     public ResponseEntity<byte[]> downloadResume(@PathVariable Long id, HttpSession session) {
         if (!isAdmin(session)) {
@@ -79,7 +85,6 @@ public class MentorAdminController {
         byte[] resumeFile = mentorApplyService.downloadResume(id);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"resume.pdf\"") // 파일명 변경 가능 -> 파일명을 사용자가 저장한 이름 그대로 받아오게해야함
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resumeFile);
     }
@@ -102,4 +107,5 @@ public class MentorAdminController {
         }
         return "redirect:/admin/mentor";
     }
+
 }

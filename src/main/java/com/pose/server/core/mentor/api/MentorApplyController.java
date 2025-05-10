@@ -80,5 +80,4 @@ public class MentorApplyController {
         return "redirect:/mentor/apply";
     }
 
-
 }
