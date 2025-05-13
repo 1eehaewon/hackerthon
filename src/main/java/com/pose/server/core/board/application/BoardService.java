@@ -139,8 +139,8 @@ public class BoardService {
 
 
     /* 게시글 검색
-    * => 어떤식으로 검색할 건지
-    * */
+     * => 어떤식으로 검색할 건지
+     * */
     public Page<BoardResponseDTO> searchByTitle(String keyword, Pageable pageable) {
         return boardRepository.findByTitleContainingIgnoreCaseAndBoardStatus(
                         keyword, BoardStatus.FREE, pageable)

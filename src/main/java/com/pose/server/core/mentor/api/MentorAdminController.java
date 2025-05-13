@@ -85,6 +85,7 @@ public class MentorAdminController {
         byte[] resumeFile = mentorApplyService.downloadResume(id);
 
         return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"resume.pdf\"") // 파일명 변경 가능 -> 파일명을 사용자가 저장한 이름 그대로 받아오게해야함
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resumeFile);
     }

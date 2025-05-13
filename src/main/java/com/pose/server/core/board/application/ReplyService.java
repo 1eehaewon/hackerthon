@@ -44,7 +44,7 @@ public class ReplyService {
     }
 
     /*
-    * 게시글 별 댓글 리스트 */
+     * 게시글 별 댓글 리스트 */
     public List<ReplyResponseDTO> getRepliesByBoardId(Long boardId) {
         return replyRepository.findAll().stream()
                 .filter(reply -> reply.getBoardEntity().getBoardId().equals(boardId))
