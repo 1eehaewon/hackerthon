@@ -34,6 +34,6 @@ public class BoardRequestDTO {
 
     private String mentorId;
 
-    private List<ReplyResponseDTO> replyByPost = List.of();
+    private final List<ReplyResponseDTO> replyByPost = List.of();
 
 }
