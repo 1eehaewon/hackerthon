@@ -23,7 +23,6 @@
 
 - 📌 [GitHub Repository](https://github.com/Kernel360/hackerthon5-POSE)
 - 🗂️ [ERD 설계 보기](https://www.erdcloud.com/d/k2Cva5kyosT4Nk6x9)
-- 💬 [Discord 채널](https://discord.gg/qfmHZAXa)
 
 ---
 
